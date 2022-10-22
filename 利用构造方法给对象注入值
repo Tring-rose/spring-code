@@ -1,0 +1,81 @@
+<!--下面的为.allilcationConstruct.xml文件-->
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+      <!--使用构造方法给对象注入值-->
+       <bean id="school" class="com.yuan.dao2.School">
+           <constructor-arg name="age" value="100"></constructor-arg>
+           <constructor-arg name="name" value="北京大学"></constructor-arg>
+       </bean>
+        <!--使用构造方法下标给对象注入值-->
+       <bean id="stu" class="com.yuan.dao2.Student">
+           <constructor-arg index="0" value="rose"></constructor-arg>
+           <constructor-arg index="1" value="25"></constructor-arg>
+           <constructor-arg index="2" ref="school"></constructor-arg>
+       </bean>
+        <!--注意：constructor-arg里面的name的值要跟构造方法里面的参数名字一样-->
+         <!--使用构造方法默认的顺序注入值，不能把顺序给颠倒-->
+       <bean id="stu1" class="com.yuan.dao2.Student">
+           <constructor-arg value="jack" ></constructor-arg>
+           <constructor-arg value="532"></constructor-arg>
+           <constructor-arg ref="school"></constructor-arg>
+       </bean>
+</beans>
+----------------student类-----------------------------------------------------
+package com.yuan.dao2;
+
+public class Student {
+    private String name;
+    private int age;
+    private School school;
+
+    public Student(String name, int age, School school) {
+        this.name = name;
+        this.age = age;
+        this.school = school;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", school=" + school +
+                '}';
+    }
+}
+-----------------School类---------------------------------------------------------
+package com.yuan.dao2;
+
+public class School {
+    private String name;
+    private int age;
+
+    @Override
+    public String toString() {
+        return "School{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+
+    public School(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+----------------------测试方法-------------------------------------------------
+ 
+ @Test
+    public void Test2(){
+        ApplicationContext ac=new ClassPathXmlApplicationContext("applicationConstructor.xml");//创建容器并完成注入
+        Student stu= (Student) ac.getBean("stu");//拿到容器对象
+        System.out.println(stu);//检测结果
+    }
+     @Test
+    public void Test3(){
+        ApplicationContext ac=new ClassPathXmlApplicationContext("applicationConstructor.xml");
+        Student stu= (Student) ac.getBean("stu1");
+        System.out.println(stu);
+    }
