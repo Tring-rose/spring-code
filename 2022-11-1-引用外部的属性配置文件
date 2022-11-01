@@ -1,0 +1,147 @@
+
+<!--
+  引用外部的属性配置文件给属性赋值，下面是.xml文件内容
+-->
+<!--
+  引用外部的properties文件
+  第一步：引用context命名空间  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd ">
+  第二步：引用标签context:property-placeholder 的location属性指定Properties文件的路径
+   <context:property-placeholder location="jdbc.properties"></context:property-placeholder>
+   location默认从根路径开始加载资源，注意:properties文件在target目录下跟.xml也要存在
+   第三步:配置数据源  <bean id="ds" class="com.yuan.DataScource3">
+ -->
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd ">
+    <context:property-placeholder location="jdbc.properties"></context:property-placeholder>
+    <bean id="ds" class="com.yuan.DataScource3">
+        <!--取properties文件中的值 使用美元符号+{}-->
+        <property name="dirver"   value="${jdbc.driver}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+        <property name= "url"     value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.Username}"></property>
+    </bean>
+</beans>
+//类文件 里面的私有属性需要加set和get方法
+package com.yuan;
+
+import javax.sql.DataSource;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
+
+public class DataScource3 implements DataSource {
+    private String dirver;
+    private String url;
+    private String username;
+    private String password;
+
+    @Override
+    public String toString() {
+        return "DataScource3{" +
+                "dirver='" + dirver + '\'' +
+                ", url='" + url + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
+    public String getDirver() {
+        return dirver;
+    }
+
+    public void setDirver(String dirver) {
+        this.dirver = dirver;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public Connection getConnection(String username, String password) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public PrintWriter getLogWriter() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public void setLogWriter(PrintWriter out) throws SQLException {
+
+    }
+
+    @Override
+    public void setLoginTimeout(int seconds) throws SQLException {
+
+    }
+
+    @Override
+    public int getLoginTimeout() throws SQLException {
+        return 0;
+    }
+
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return null;
+    }
+}
+-------------------------------------
+测试方法
+  @Test
+    public void testproperties(){
+        ApplicationContext ac=new ClassPathXmlApplicationContext("spring-context.xml");
+        DataScource3 d=ac.getBean("ds",DataScource3.class);
+        System.out.println(d);
+    }
+----------------------
+运行结果
+DataScource3{dirver='Mysql', url='http:23t:twt', username='haogw23', password='123456'}
+
+Process finished with exit code 0
+
