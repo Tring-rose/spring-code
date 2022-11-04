@@ -1,0 +1,64 @@
+bean的五步生命周期
+第一步，调用bean的无参数构造方法！
+第二步，给对象的属性赋值
+第三步，初始化bean
+第四步：使用beanUser{name='张三'}
+第五步，销毁bean
+=========================================================
+.xml文件
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <!--
+    init方法跟distorybean方法是要程序员自己创建的
+  
+  -->
+  <bean id="user" class="com.yuan.User" init-method="initbean" destroy-method="distorybean">
+        <property name="name" value="张三"></property>
+    </bean>
+</beans>
+======================================================
+类文件
+package com.yuan;
+
+public class User {
+    private String name;
+---------第二步
+    public void setName(String name) {
+        System.out.println("第二步，给对象的属性赋值");
+        this.name = name;
+    }
+---------第一步
+    public User() {
+        System.out.println("第一步，调用bean的无参数构造方法！");
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+--------------------------------------第三步    
+    public void initbean(){
+        System.out.println("第三步，初始化bean");
+    }
+第五步    
+    public void distorybean(){
+        System.out.println("第五步，销毁bean");
+    }
+    //第五步需要调用ClassPathXmlApplicationContext方法才能销毁
+     ClassPathXmlApplicationContext context=(ClassPathXmlApplicationContext) applicationContext;
+        context.close();
+}
+===================================
+测试类
+  @Test
+    public void testbeanfive(){
+        ApplicationContext applicationContext=new ClassPathXmlApplicationContext("spring-beanfivecycle.xml");
+        User user=applicationContext.getBean("user",User.class);
+        System.out.println("第四步：使用bean"+user);
+        ClassPathXmlApplicationContext context=(ClassPathXmlApplicationContext) applicationContext;
+        context.close();
+    }
