@@ -1,0 +1,69 @@
+再原来五步的基础上，在初始化bean前后调用bean处理器的before和after方法
+第一步，调用bean的无参数构造方法！
+第二步，给对象的属性赋值
+第三步，执行bean后处理器的before方法
+第四步，初始化bean
+第五步，执行bean后处理器的afrer方法
+第六步：使用beanUser{name='张三'}
+第七步，销毁bean
+需要一个类实现BeanPostprocessor接口
+User class文件代码：
+package com.yuan;
+
+public class User {
+    private String name;
+
+    public void setName(String name) {
+        System.out.println("第二步，给对象的属性赋值");
+        this.name = name;
+    }
+
+    public User() {
+        System.out.println("第一步，调用bean的无参数构造方法！");
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+    public void initbean(){
+        System.out.println("第四步，初始化bean");
+    }
+    public void distorybean(){
+        System.out.println("第七步，销毁bean");
+    }
+}
+package com.yuan;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+
+public class LogBeanPostProcessor implements BeanPostProcessor {
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println("第三步，执行bean后处理器的before方法");
+        return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println("第五步，执行bean后处理器的afrer方法");
+        return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
+    }
+}
+spring配置文件：
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--
+        配置bean后处理器
+        注意：配置的bean后处理器将作用于整个配置文件中的所有bean
+    -->
+    <bean id="use" class="com.yuan.LogBeanPostProcessor"></bean>
+    <bean id="user" class="com.yuan.User" init-method="initbean" destroy-method="distorybean">
+        <property name="name" value="张三"></property>
+    </bean>
+</beans>
