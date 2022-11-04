@@ -1,0 +1,103 @@
+springxml文件：
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--
+    spring 提供bean实例化的第一种方法：在spring配置文件中直接配置类全路径，spring会自动调用该类的构造方法
+    spring 提供bean实例化的第二种方法：通过简单工厂模式，通过factory-method属性调用该类的静态方法构造对象
+    -->
+    <bean id="star" class="com.bean.starfactory" factory-method="get"></bean>
+    <!--
+    spring 提供bean实例化的第三种方法：通过factory-bean跟factory-method属性共同完成
+    -->
+    <bean id="gun" class="com.bean.GunFactory"></bean>
+    <!--factory-bean 告诉spring容器调用哪个对象，factory-method告诉spring调用哪个方法-->
+    <bean id="gun1" factory-bean="gun" factory-method="get"/>
+    <!--
+        spring 提供bean实例化的第四个方法，通过实现FactoryBean的接口来实现bean的创建
+        class选择实现了FactoryBean接口的类，由于实现了FactoryBean接口，这个类就是一个特殊的类，不需要手动指定factory-bean和factory-method
+    -->
+    <bean id="persion" class="com.bean.PresionFactoryBean"></bean>
+    <bean id="date " class="com.bean.DateFactoryBean">
+        <constructor-arg index="0" value="2003-05-31"/>
+    </bean>
+    <bean id="birth" class="com.bean.studentbirth">
+        <property name="birth" ref="date "></property>
+    </bean>
+</beans>
+-----------------------------------------------------
+star类
+package com.bean;
+/*
+bean 实例化的第二种方式，通过简单工厂模式实例化
+ */
+public class star {
+    public star(){
+        System.out.println("star 的无参数构造方法执行了");
+    }
+}
+package com.bean;
+
+star工厂类
+public class starfactory {
+    public static star get(){
+        return new star();
+    }
+}
+
+
+====================================================
+bean实例化第三种方法，利用factory-bean跟factory-method属性共同完成
+ <bean id="gun" class="com.bean.GunFactory"></bean>
+    <!--factory-bean 告诉spring容器调用哪个对象，factory-method告诉spring调用哪个方法-->
+    <bean id="gun1" factory-bean="gun" factory-method="get"/>
+工厂模式中的Gun
+package com.bean;
+
+public class Gun {
+    public Gun(){
+        System.out.println("Gun is created");
+    }
+}
+GunFactory工厂类
+package com.bean;
+spring调用的get方法
+public class GunFactory {
+    public Gun get(){
+        return new Gun();
+    }
+}
+
+====================================================
+bean实例化第四种方法，实现FactoryBean接口，通过FactoryBean接口实现对bean的实例化
+ <bean id="persion" class="com.bean.PresionFactoryBean"></bean>
+    <bean id="date " class="com.bean.DateFactoryBean">
+        <constructor-arg index="0" value="2003-05-31"/>
+    </bean>
+    <bean id="birth" class="com.bean.studentbirth">
+        <property name="birth" ref="date "></property>
+    </bean>
+package com.bean;
+import org.springframework.beans.factory.FactoryBean;
+public class PresionFactoryBean implements FactoryBean<Persion> {
+
+    @Override
+    public Persion getObject() throws Exception {
+        //最终这个bean的创建还是程序员自己new的
+        return new Persion();
+
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return null;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return FactoryBean.super.isSingleton();
+    }
+}
+
+
