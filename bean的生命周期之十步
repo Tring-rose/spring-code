@@ -16,6 +16,8 @@
 第八步：使用beanUser{name='张三'}
 第九步，实现了Disposable接口
 第十步，销毁bean
+注意：spring 容器的只对singleton的bean进行完整的生命周期管理，scope属性值如果为prototype,spring容器只将bean初始化，
+等到客户端拿到bean后，spring容器不再管理bean的生命周期
 ==================================================================================================================
 spring的.xml文件
 <?xml version="1.0" encoding="UTF-8"?>
