@@ -1,0 +1,18 @@
+将自己new的对象纳入spring容器进行管理
+Student类的代码：
+public class Student{
+  
+}
+  @Test
+    public void testSpringControl(){
+        Student student=new Student();
+        System.out.println(student);
+        //将new出来的对象交给spring容器进行管理
+        DefaultListableBeanFactory defaultListableBeanFactory=new DefaultListableBeanFactory();
+        defaultListableBeanFactory.registerSingleton("studentbean",student);
+        //获取bean
+        Object obj=defaultListableBeanFactory.getBean("studentbean");
+        System.out.println(obj);
+    }
+    运行时输出的结果：com.yuan.Student@156643d4
+                    com.yuan.Student@156643d4
