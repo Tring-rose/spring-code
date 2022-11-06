@@ -1,6 +1,12 @@
 Bean的循环依赖之单例模式+set
 /*
-**当Hasband和Wife都为多例的情况下，多例模式+set会出现异常
+*在singleton+set模式下依赖循环不会出现异常的主要原因是在singleton+set模式下的管理主要分为两阶段
+*第一阶段：在spring容器加载的时候实例化Bean，只要其中任意一个Bean实例化后就"曝光"【不等属性赋值就曝光】
+*第二阶段：在进行曝光之后，再进行对属性的赋值(调用set方法)
+*核心解决方案是，实例化对象和对象的赋值分两个阶段完成
+*【注意】：只有在scope的属性值是singleton的情况下,Bean才会进行"曝光"措施
+*当Hasband和Wife都为多例的情况下，多例模式+set会出现BeanCurrentlyCreationException[Bean正在创建中异常]
+*当两个Bean的scope都是prototype属性值的时候才会出现该异常，只要其中的一个scope属性为singleton时才不会出现该异常
 */
 ========================================================================
 spring的.xml文件
