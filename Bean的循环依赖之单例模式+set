@@ -80,3 +80,7 @@ public class Husband {
 }
 =================================================================
 注意：无论是Husband类还是Wife类，重写的tostrig方法里面的wife(husband)都要调用其getname方法，否则会陷入死循环进行报错
+运行结果：
+Husband{name='小明', wife=小红}
+Wife{name='小红', husband=小明}
+
