@@ -1,0 +1,82 @@
+Bean的循环依赖之单例模式+set
+========================================================================
+spring的.xml文件
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="husband" class="com.yuan.Husband" >
+        <property name="name" value="小明"></property>
+        <property name="wife" ref="wife"></property>
+    </bean>
+    <bean id="wife" class="com.yuan.Wife" >
+        <property name="name" value="小红"></property>
+        <property name="husband" ref="husband"></property>
+    </bean>
+</beans>
+=======================================================================
+Wife类文件
+package com.yuan;
+
+public class Wife {
+    private String name;
+    private Husband husband;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Husband getHusband() {
+        return husband;
+    }
+
+    public void setHusband(Husband husband) {
+        this.husband = husband;
+    }
+
+    @Override
+    public String toString() {
+        return "Wife{" +
+                "name='" + name + '\'' +
+                ", husband=" + husband.getName() +
+                '}';
+    }
+}
+===========================================================================================
+Husband类文件：
+package com.yuan;
+
+public class Husband {
+    private String name;
+    private Wife wife;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Wife getWife() {
+        return wife;
+    }
+
+    public void setWife(Wife wife) {
+        this.wife = wife;
+    }
+
+    @Override
+    public String toString() {
+        return "Husband{" +
+                "name='" + name + '\'' +
+                ", wife=" + wife.getName() +
+                '}';
+    }
+}
+=================================================================
+注意：无论是Husband类还是Wife类，重写的tostrig方法里面的wife(husband)都要调用其getname方法，否则会陷入死循环进行报错
